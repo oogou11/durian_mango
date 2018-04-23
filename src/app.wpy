@@ -1,0 +1,129 @@
+<style lang="less">
+@import "./styles/base";
+@import "./styles/icon";
+@import "./styles/style";
+
+</style>
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function'
+import {
+  USER_SPECICAL_INFO,
+  USER_INFO,
+  SYSTEM_INFO,
+  ADDRESS_ID,
+  SEL_CLASS_CODE
+} from "./utils/constant";
+import {
+  wxJsCode2Session
+} from './api/api';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/home',
+      'pages/home_detail', 
+      'pages/info',
+      'pages/search', 
+      'pages/register',      
+      'pages/messages',
+      'pages/setting', 
+      'pages/address', 
+      'pages/filter'
+    ],
+    window: {
+      backgroundTextStyle: 'dark',
+      navigationBarBackgroundColor: '#FFFFFF',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black',
+      enablePullDownRefresh: false,
+      backgroundColor: '#EFEFEF'
+
+    },
+    "tabBar": {
+      "color": "#999999",
+      "selectedColor": "#ff6a3c",
+      "backgroundColor": "#ffffff",
+      "borderStyle": "black",
+      "list": [{
+        "pagePath": "pages/home",
+        "text": "首页",
+        "iconPath": "images/icon_home.png",
+        "selectedIconPath": "images/icon_home_active.png"
+      }, {
+        "pagePath": "pages/info",
+        "text": "我",
+        "iconPath": "images/icon_info.png",
+        "selectedIconPath": "images/icon_info_active.png"
+      }]
+    }
+  }
+
+  globalData = {
+    userInfo: null,
+    appid: 'wx1174e760242f1384',
+    secret: '14c6e43fa8f48bfe7e820f9b9dc82c6c',
+  }
+
+  constructor() {
+    super()
+    this.use('requestfix')
+    this.use('promisify');
+
+  }
+
+  async onLaunch() {
+    let that = this;
+    //用户信息
+    let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
+
+    // 用户普通信息
+    let userInfo = wepy.getStorageSync(USER_INFO) || {};
+
+    //如果信息过期
+    if ((!userSpecialInfo.openid || (userSpecialInfo.expires_in || Date.now()) < (Date.now() + 600)) && (!userInfo.nickName)) {
+      let res = await wepy.login();
+      if (res.code) {
+        let d = that.globalData; //这里存储了appid、secret、token串    
+        //存储userInfo 
+        let c = await wepy.getUserInfo(); 
+        wepy.setStorageSync(USER_INFO, c.userInfo);
+
+        //存储系统信息 
+        let systemInfo = wepy.getSystemInfoSync();
+        wepy.setStorageSync(SYSTEM_INFO, systemInfo);
+
+        wxJsCode2Session({
+          method:'POST',
+          query: {
+            jsCode: res.code,
+            nickName: c.userInfo.nickName
+          }
+        }).then(resp => {
+          var rlt = resp.data; 
+          if (rlt.code==0) {
+            var data = rlt.result;
+            if (data.openid) {
+              let obj = {};
+              obj.openid = data.openid;
+              obj.expires_in = Date.now() + data.expires_in;
+              //存储openid 
+              wepy.setStorageSync(USER_SPECICAL_INFO, obj);
+            }
+          } else {
+            let obj = {};
+            obj.openid = "oeuj50KHMqsh5kYZYWQJuwmY5yG0";
+            obj.expires_in = "7200";
+            //存储openid 
+            wepy.setStorageSync(USER_SPECICAL_INFO, obj);
+          }
+        }); 
+      } else {
+        console.log('获取用户登录态失败！' + res.errMsg)
+      }
+
+    }
+  }
+}
+
+</script>
