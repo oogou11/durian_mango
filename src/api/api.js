@@ -12,10 +12,14 @@ const apiMall = 'https://api.leyouv.com/api/v1'
  */
 
 const getHomeDisvocerList = (params) => wxRequest(params, apiMall + '/shop/discoverlist');
-const getAdList=(params)=>wxRequest(params,apiMall+'/shop/adlist')
+const getAdList=(params)=>wxRequest(params,apiMall+'/shop/adlist') 
+//查询商品详情信息
+const goodsDetail = (params) => wxRequest(params, apiMall + '/shop/detail');
+
 //用户是否绑定手机号
 const getUserInfo = (params) => wxRequest(params, apiMall + '/usercenter/getuserinfo');
 const messageInfo = (params) => wxRequest(params, apiMall + '/usercenter/messageInfo');
+
 const getUserAddress = (params) => wxRequest(params, apiMall + '/usercenter/address/list');
 const getAddressById = (params) => wxRequest(params, apiMall + '/usercenter/address/info');
 const addAddress = (params) => wxRequest(params, apiMall + '/usercenter/add/address');
@@ -23,10 +27,20 @@ const updateAddress = (params) => wxRequest(params, apiMall + '/usercenter/updat
 const hostProdctList = (params) => wxRequest(params, apiMall + '/shop/host/list');
 //微信的jscode换取sessionKey
 const wxJsCode2Session = (params) => wxRequest(params, apiMall + "/usercenter/jscode2session"); 
+//添加用户足迹
+const addBrowser = (params) => wxRequest(params, apiMall + '/usercenter/userbrowse/add');
+//查询关键字列表
+const searchKeywordList = (params) => wxRequest(params, apiMall + '/keywords/list');
+//查询关键字保存
+const addSearchKeyword = (params) => wxRequest(params, apiMall + '/keywords/add'); 
+//查询关键字清除
+const clearSearchKeyword = (params) => wxRequest(params, apiMall + '/keywords/clear');
+
 
 module.exports = {
   getHomeDisvocerList,
   getAdList,
+  goodsDetail,
   getUserInfo,
   messageInfo,
   getUserAddress,
@@ -34,7 +48,11 @@ module.exports = {
   addAddress,
   updateAddress,
   hostProdctList,
-  wxJsCode2Session
+  wxJsCode2Session,
+  addBrowser,
+  searchKeywordList,
+  addSearchKeyword,
+  clearSearchKeyword
 }
 // const getDiscoverList = (params) => wxRequest(params, apiMall + '/goods/list?cateidOne=1&cateidTwo=0&price=0&sales=2');
 
@@ -119,8 +137,6 @@ module.exports = {
 // const addSearchKeyword = (params) => wxRequest(params, apiMall + '/api/searchkeyword/add');
 // //查询关键字列表
 // const searchKeywordList = (params) => wxRequest(params, apiMall + '/api/searchkeyword/list');
-// //查询关键字清除
-// const clearSearchKeyword = (params) => wxRequest(params, apiMall + '/api/searchkeyword/clear');
 
 // //查询我的订单
 // const getMyOrderList = (params) => wxRequest(params, apiMall + '/api/mall/goodsOrder/getMyOrderList');

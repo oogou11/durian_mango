@@ -1,0 +1,70 @@
+<!--商品评论列表-->
+<template>
+  <view class="block">
+    <view class="block_title">全部评价(20)</view>
+    <view class="block_content">
+      <commentList :list.sync="commentList"></commentList>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import CommentList from "../components/comment_list"
+export default class goodsComment extends wepy.page {
+  config = {
+    navigationBarTitleText: '商品评论',
+  }
+  data = {
+    commentList: [{
+        url: "../images/icon_nav_01_new.png",
+        name: "浪子天涯",
+        time: "2018-04-29 10:10",
+        content: "味道so赞!",
+        start: 4.5,
+        children: [{
+          content: "多多光顾小店啊！"
+        }],
+
+      },
+      {
+        url: "../images/icon_nav_04_new.png",
+        name: "勇闯天下",
+        time: "2018-04-28 10:10",
+        content: "不但味道赞，而且也很漂亮~~~大大的赞一个。。。",
+        start: 4,
+        children: [],
+
+      }
+
+
+    ],
+  }
+  onLoad() {
+    
+  }
+  components = {
+    commentList: CommentList
+  }
+  computed = {}
+  methods = {}
+  events = {}
+}
+
+</script>
+<style lang="less">
+.block {
+  padding: 27rpx 0rpx;
+  background: #fff;
+  .block_title {
+    color: #000;
+    height: 30rpx;
+    line-height: 30rpx;
+    border-left: 6px solid #f73c3c;
+    padding-left: 20rpx;
+  }
+  .block_content {
+    padding: 38rpx 22rpx;
+  }
+}
+
+</style>

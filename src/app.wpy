@@ -23,7 +23,9 @@ export default class extends wepy.app {
     pages: [
       'pages/home',
       'pages/home_detail', 
+      'pages/goods_detail',
       'pages/info',
+      'pages/comment',
       'pages/search', 
       'pages/register',      
       'pages/messages',
@@ -61,8 +63,7 @@ export default class extends wepy.app {
 
   globalData = {
     userInfo: null,
-    appid: 'wx1174e760242f1384',
-    secret: '14c6e43fa8f48bfe7e820f9b9dc82c6c',
+    appid: ''
   }
 
   constructor() {
@@ -97,7 +98,7 @@ export default class extends wepy.app {
           method:'POST',
           query: {
             jsCode: res.code,
-            nickName: c.userInfo.nickName
+            userInfo: c.userInfo
           }
         }).then(resp => {
           var rlt = resp.data; 
@@ -112,7 +113,7 @@ export default class extends wepy.app {
             }
           } else {
             let obj = {};
-            obj.openid = "oeuj50KHMqsh5kYZYWQJuwmY5yG0";
+            obj.openid = "5ad6c7fa2999015052ade7ee";
             obj.expires_in = "7200";
             //存储openid 
             wepy.setStorageSync(USER_SPECICAL_INFO, obj);

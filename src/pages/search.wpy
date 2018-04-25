@@ -54,9 +54,9 @@
       is_empty: false,
       is_filter:false,
       //当前页面
-      currentPage: 1,
+      offset: 0,
       //总页数
-      page_total: 0,
+      total_count: 0,
       keyword: "",
       keywordhisList: [],
       cateCode: "",
@@ -74,7 +74,7 @@
         }
       });
       if (json.data.code == 0) {
-        this.keywordhisList = json.data.list;
+        this.keywordhisList = json.data.result;
       }
       this.$apply();
     }
@@ -100,11 +100,12 @@
       }
     }
     computed = {}
-    async doSearchGoods(keyword, currentPage, size) {
+    async doSearchGoods(keyword, offset, size) {
       let that = this;
-      const json = await api.getGoodsList({
+      const json = await api.hostProdctList({
+        method:'POST',
         query: {
-          page: currentPage || 1,
+          offset: offset || 0,
           size: size || 10,
           searchKeyWords: this.keyword,
           cateCode: this.cateCode || "",
@@ -113,7 +114,7 @@
         }
       });
       if (json.data.code == 0) {
-        that.list = [...that.list, ...json.data.list];
+        that.list = [...that.list, ...json.data.result];
         that.page_total = json.data.page_total;
         if (json.data.page_total == 0) {
           //暂无数据
@@ -128,6 +129,7 @@
         let userSpecialInfo = wepy.getStorageSync(USER_SPECICAL_INFO) || {};
         let openId = userSpecialInfo.openid;
         const resultJson = await api.addSearchKeyword({
+          method:'POST',
           query: {
             openId: openId,
             keyword: keyword
@@ -225,16 +227,16 @@
     onReachBottom() {
       let that = this;
       that.showLoading = true;
-      console.log(that.page_total + "===" + that.currentPage);
+      console.log(that.total_count + "===" + that.offset);
       //判断总页数是否大于翻页数
-      if ((that.page_total) > that.currentPage) {
+      if ((that.total_count) > that.offset*that.size) {
         //防止重复加载
         if (that.preventRepeatReuqest) {
           return true;
         }
         that.preventRepeatReuqest = true;
-        that.currentPage++;
-        that.doSearchGoods("", that.currentPage);
+        that.offset+=10;
+        that.doSearchGoods("", that.offset);
         that.preventRepeatReuqest = false;
       } else {
         that.showLoading = false;
